@@ -4,89 +4,48 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    --background: 30 15% 6%;
+    --foreground: 42 30% 88%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card: 30 12% 9%;
+    --card-foreground: 42 30% 88%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover: 30 12% 9%;
+    --popover-foreground: 42 30% 88%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    --primary: 42 55% 55%;
+    --primary-foreground: 30 15% 6%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 30 10% 14%;
+    --secondary-foreground: 42 30% 80%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 30 10% 14%;
+    --muted-foreground: 42 15% 55%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent: 42 55% 55%;
+    --accent-foreground: 30 15% 6%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 62.8% 40%;
+    --destructive-foreground: 42 30% 88%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --border: 42 20% 20%;
+    --input: 42 20% 18%;
+    --ring: 42 55% 55%;
 
-    --radius: 0.5rem;
+    --radius: 0.25rem;
 
-    --sidebar-background: 0 0% 98%;
+    --gold: #c9a84c;
+    --gold-light: #e8d5a3;
+    --gold-dark: #9a7a32;
 
-    --sidebar-foreground: 240 5.3% 26.1%;
-
-    --sidebar-primary: 240 5.9% 10%;
-
-    --sidebar-primary-foreground: 0 0% 98%;
-
-    --sidebar-accent: 240 4.8% 95.9%;
-
-    --sidebar-accent-foreground: 240 5.9% 10%;
-
-    --sidebar-border: 220 13% 91%;
-
-    --sidebar-ring: 217.2 91.2% 59.8%;
-  }
-
-  .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
-
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
-
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
-
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-background: 30 12% 8%;
+    --sidebar-foreground: 42 30% 88%;
+    --sidebar-primary: 42 55% 55%;
+    --sidebar-primary-foreground: 30 15% 6%;
+    --sidebar-accent: 30 10% 14%;
+    --sidebar-accent-foreground: 42 30% 88%;
+    --sidebar-border: 42 20% 18%;
+    --sidebar-ring: 42 55% 55%;
   }
 }
 
@@ -97,5 +56,241 @@
 
   body {
     @apply bg-background text-foreground;
+    font-family: "Montserrat", sans-serif;
+  }
+
+  ::selection {
+    background: rgba(201, 168, 76, 0.3);
+    color: #e8d5a3;
+  }
+}
+
+@layer utilities {
+  .font-display {
+    font-family: "Cormorant Garamond", serif;
+  }
+
+  .text-gold {
+    color: var(--gold);
+  }
+
+  .text-gold-light {
+    color: var(--gold-light);
+  }
+
+  .border-gold {
+    border-color: var(--gold);
+  }
+
+  .bg-gold {
+    background-color: var(--gold);
+  }
+
+  .ornament-line {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .ornament-line::before,
+  .ornament-line::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  }
+
+  .nav-link {
+    position: relative;
+    font-family: "Montserrat", sans-serif;
+    font-weight: 400;
+    letter-spacing: 0.15em;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    color: #c9a84c;
+    transition: color 0.3s ease;
+  }
+
+  .nav-link::after {
+    content: "";
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 0;
+    height: 1px;
+    background: var(--gold);
+    transition: width 0.3s ease;
+  }
+
+  .nav-link:hover::after,
+  .nav-link.active::after {
+    width: 100%;
+  }
+
+  .nav-link.active {
+    color: var(--gold-light);
+  }
+
+  .menu-card {
+    border: 1px solid rgba(201, 168, 76, 0.2);
+    background: rgba(201, 168, 76, 0.03);
+    transition: all 0.4s ease;
+  }
+
+  .menu-card:hover {
+    border-color: rgba(201, 168, 76, 0.5);
+    background: rgba(201, 168, 76, 0.06);
+  }
+
+  .gallery-img {
+    filter: sepia(20%) contrast(1.1) brightness(0.9);
+    transition:
+      filter 0.5s ease,
+      transform 0.5s ease;
+  }
+
+  .gallery-img:hover {
+    filter: sepia(0%) contrast(1.05) brightness(1);
+  }
+
+  .imperial-btn {
+    font-family: "Montserrat", sans-serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-weight: 500;
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    background: transparent;
+    padding: 0.85rem 2.5rem;
+    transition: all 0.4s ease;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .imperial-btn::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: var(--gold);
+    transform: translateX(-101%);
+    transition: transform 0.4s ease;
+    z-index: -1;
+  }
+
+  .imperial-btn:hover::before {
+    transform: translateX(0);
+  }
+
+  .imperial-btn:hover {
+    color: #0a0804;
+  }
+
+  .imperial-btn-filled {
+    background: var(--gold);
+    color: #0a0804;
+    font-family: "Montserrat", sans-serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-weight: 600;
+    padding: 0.85rem 2.5rem;
+    border: 1px solid var(--gold);
+    transition: all 0.4s ease;
+    cursor: pointer;
+  }
+
+  .imperial-btn-filled:hover {
+    background: var(--gold-light);
+    border-color: var(--gold-light);
+  }
+
+  .section-title {
+    font-family: "Cormorant Garamond", serif;
+    font-weight: 300;
+    font-style: italic;
+    color: var(--gold-light);
+    letter-spacing: 0.05em;
+  }
+
+  .section-subtitle {
+    font-family: "Montserrat", sans-serif;
+    font-size: 0.6rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+    font-weight: 400;
+  }
+
+  .imperial-input {
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid rgba(201, 168, 76, 0.4);
+    border-radius: 0;
+    color: #e8d5a3;
+    padding: 0.75rem 0;
+    font-family: "Montserrat", sans-serif;
+    font-size: 0.8rem;
+    font-weight: 300;
+    letter-spacing: 0.05em;
+    outline: none;
+    width: 100%;
+    transition: border-color 0.3s ease;
+  }
+
+  .imperial-input::placeholder {
+    color: rgba(232, 213, 163, 0.35);
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+
+  .imperial-input:focus {
+    border-bottom-color: var(--gold);
+  }
+
+  .scroll-reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition:
+      opacity 0.8s ease,
+      transform 0.8s ease;
+  }
+
+  .scroll-reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .noise-bg {
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  }
+
+  .divider-ornament {
+    text-align: center;
+    color: var(--gold);
+    font-size: 1.2rem;
+    letter-spacing: 0.5rem;
+    opacity: 0.6;
+    margin: 1rem 0;
+  }
+
+  .status-badge {
+    font-size: 0.55rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    font-family: "Montserrat", sans-serif;
+    font-weight: 500;
+    padding: 0.25rem 0.75rem;
+  }
+
+  .hero-overlay {
+    background: linear-gradient(
+      to bottom,
+      rgba(10, 8, 4, 0.65) 0%,
+      rgba(10, 8, 4, 0.4) 40%,
+      rgba(10, 8, 4, 0.7) 100%
+    );
   }
 }
