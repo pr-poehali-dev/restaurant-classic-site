@@ -117,7 +117,7 @@ export default function Index() {
       {/* Header */}
       <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-700 ${scrolled ? 'bg-imperial-black/95 backdrop-blur-sm border-b border-gold/10 py-4' : 'py-8'}`}>
         <div className="max-w-6xl mx-auto px-8 flex items-center justify-between">
-          <button onClick={() => navigateTo('about')} className="text-left hover:opacity-80 transition-opacity">
+          <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="text-left hover:opacity-80 transition-opacity">
             <p className="section-subtitle text-[0.5rem] tracking-[0.4em] mb-1 opacity-70">Ресторан</p>
             <h1 className="font-display text-2xl font-light text-gold-light tracking-wider">Golden Fork</h1>
           </button>
@@ -150,7 +150,7 @@ export default function Index() {
         <div className="hero-overlay absolute inset-0" />
         <div className="absolute inset-0 bg-imperial-black/30" />
         <div className="relative z-10 text-center px-4" style={{ animation: 'fade-in-slow 2s ease-out forwards' }}>
-          <p className="section-subtitle tracking-[0.5em] mb-8 opacity-80">Москва · С 1998 года</p>
+          <p className="section-subtitle tracking-[0.5em] mb-8 opacity-80">Екатеринбург · С 1998 года</p>
           <h2 className="font-display text-7xl md:text-8xl font-light text-gold-light leading-tight mb-4" style={{ fontStyle: 'italic' }}>
             Высокая<br />русская кухня
           </h2>
@@ -228,7 +228,7 @@ export default function Index() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-10 text-center">
                 {[
                   { icon: 'Clock' as const, label: 'Часы работы', lines: ['Пн–Пт: 12:00 – 24:00', 'Сб–Вс: 13:00 – 01:00'] },
-                  { icon: 'MapPin' as const, label: 'Адрес', lines: ['Москва, ул. Пречистенка', 'дом 17, строение 1'] },
+                  { icon: 'MapPin' as const, label: 'Адрес', lines: ['Екатеринбург, ул. Вайнера', 'дом 17, строение 1'] },
                   { icon: 'Phone' as const, label: 'Телефон', lines: ['+7 (495) 123-45-67', '+7 (495) 123-45-68'] },
                 ].map((info, i) => (
                   <div key={i}>
@@ -412,7 +412,7 @@ export default function Index() {
           </div>
           <div className="divider-ornament mb-10 opacity-30">⸻ ✦ ⸻</div>
           <div className="flex flex-col md:flex-row justify-between items-center gap-6 text-[0.55rem] font-montserrat tracking-widest uppercase text-muted-foreground">
-            <span>Москва, ул. Пречистенка, д. 17</span>
+            <span>г. Екатеринбург, ул. Вайнера, д. 17</span>
             <span>+7 (495) 123-45-67</span>
             <span>© 2024 Golden Fork</span>
           </div>
