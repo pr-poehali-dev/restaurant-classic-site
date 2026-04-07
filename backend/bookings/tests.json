@@ -1,0 +1,27 @@
+{
+  "tests": [
+    {
+      "name": "GET bookings list",
+      "method": "GET",
+      "path": "/",
+      "expectedStatus": 200,
+      "bodyMatcher": "partial"
+    },
+    {
+      "name": "POST create booking",
+      "method": "POST",
+      "path": "/",
+      "body": {
+        "name": "Тест Тестович",
+        "phone": "+7 (999) 000-00-00",
+        "date": "2024-12-31",
+        "time": "19:00",
+        "guests": "2",
+        "wishes": ""
+      },
+      "expectedStatus": 201,
+      "expectedBody": {"message": "Бронирование создано"},
+      "bodyMatcher": "partial"
+    }
+  ]
+}

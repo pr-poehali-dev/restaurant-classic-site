@@ -1,6 +1,8 @@
 import { useState, useEffect, useRef } from 'react';
 import Icon from '@/components/ui/icon';
 
+const API_URL = 'https://functions.poehali.dev/a1712dd6-cef1-482f-9c70-73dc534c72e6';
+
 type Tab = 'about' | 'menu' | 'gallery' | 'booking';
 
 const MENU_CATEGORIES = [
@@ -54,8 +56,11 @@ export default function Index() {
   const [activeMenuCat, setActiveMenuCat] = useState(0);
   const [bookingForm, setBookingForm] = useState({ name: '', phone: '', date: '', time: '', guests: '', wishes: '' });
   const [bookingSubmitted, setBookingSubmitted] = useState(false);
+  const [bookingLoading, setBookingLoading] = useState(false);
+  const [bookingError, setBookingError] = useState('');
   const [scrolled, setScrolled] = useState(false);
   const heroRef = useRef<HTMLDivElement>(null);
+  const mainRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 60);
@@ -72,9 +77,31 @@ export default function Index() {
     return () => observer.disconnect();
   }, [activeTab]);
 
-  const handleBookingSubmit = (e: React.FormEvent) => {
+  const navigateTo = (tab: Tab) => {
+    setActiveTab(tab);
+    setTimeout(() => {
+      mainRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 50);
+  };
+
+  const handleBookingSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setBookingSubmitted(true);
+    if (!bookingForm.guests) { setBookingError('Выберите количество гостей'); return; }
+    setBookingLoading(true);
+    setBookingError('');
+    try {
+      const res = await fetch(API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(bookingForm),
+      });
+      if (!res.ok) { const d = await res.json(); throw new Error(d.error || 'Ошибка сервера'); }
+      setBookingSubmitted(true);
+    } catch (err) {
+      setBookingError(err instanceof Error ? err.message : 'Ошибка отправки. Попробуйте позже.');
+    } finally {
+      setBookingLoading(false);
+    }
   };
 
   const tabs: { key: Tab; label: string }[] = [
@@ -90,24 +117,24 @@ export default function Index() {
       {/* Header */}
       <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-700 ${scrolled ? 'bg-imperial-black/95 backdrop-blur-sm border-b border-gold/10 py-4' : 'py-8'}`}>
         <div className="max-w-6xl mx-auto px-8 flex items-center justify-between">
-          <div>
+          <button onClick={() => navigateTo('about')} className="text-left hover:opacity-80 transition-opacity">
             <p className="section-subtitle text-[0.5rem] tracking-[0.4em] mb-1 opacity-70">Ресторан</p>
-            <h1 className="font-display text-2xl font-light text-gold-light tracking-wider">Императоръ</h1>
-          </div>
+            <h1 className="font-display text-2xl font-light text-gold-light tracking-wider">Golden Fork</h1>
+          </button>
           <nav className="hidden md:flex items-center gap-10">
             {tabs.map(tab => (
-              <button key={tab.key} onClick={() => setActiveTab(tab.key)} className={`nav-link ${activeTab === tab.key ? 'active' : ''}`}>
+              <button key={tab.key} onClick={() => navigateTo(tab.key)} className={`nav-link ${activeTab === tab.key ? 'active' : ''}`}>
                 {tab.label}
               </button>
             ))}
           </nav>
-          <button onClick={() => setActiveTab('booking')} className="imperial-btn hidden md:block">
+          <button onClick={() => navigateTo('booking')} className="imperial-btn hidden md:block">
             Забронировать
           </button>
         </div>
         <div className="md:hidden flex justify-center gap-6 mt-4 px-4">
           {tabs.map(tab => (
-            <button key={tab.key} onClick={() => setActiveTab(tab.key)} className={`nav-link text-[0.5rem] ${activeTab === tab.key ? 'active' : ''}`}>
+            <button key={tab.key} onClick={() => navigateTo(tab.key)} className={`nav-link text-[0.5rem] ${activeTab === tab.key ? 'active' : ''}`}>
               {tab.label}
             </button>
           ))}
@@ -132,8 +159,8 @@ export default function Index() {
             Традиции императорского стола
           </p>
           <div className="flex gap-4 justify-center">
-            <button onClick={() => setActiveTab('menu')} className="imperial-btn">Изучить меню</button>
-            <button onClick={() => setActiveTab('booking')} className="imperial-btn-filled">Забронировать стол</button>
+            <button onClick={() => navigateTo('menu')} className="imperial-btn">Изучить меню</button>
+            <button onClick={() => navigateTo('booking')} className="imperial-btn-filled">Забронировать стол</button>
           </div>
         </div>
         <div className="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce">
@@ -142,7 +169,7 @@ export default function Index() {
       </section>
 
       {/* Main content */}
-      <main className="max-w-6xl mx-auto px-8 py-20">
+      <main ref={mainRef} className="max-w-6xl mx-auto px-8 py-20">
 
         {/* === О РЕСТОРАНЕ === */}
         {activeTab === 'about' && (
@@ -154,7 +181,7 @@ export default function Index() {
                 <span className="text-gold text-sm">✦</span>
               </div>
               <p className="font-montserrat text-sm font-light leading-loose text-muted-foreground max-w-2xl mx-auto">
-                Ресторан «Императоръ» открыл свои двери в 1998 году в особняке XIX века в самом сердце Москвы.
+                Ресторан Golden Fork открыл свои двери в 1998 году в особняке XIX века в самом сердце Москвы.
                 За четверть века мы стали символом высокой русской гастрономии, сохраняя рецепты императорской
                 кухни и даря гостям незабываемые впечатления.
               </p>
@@ -257,7 +284,7 @@ export default function Index() {
               <p className="text-muted-foreground text-xs font-montserrat font-light mb-8 tracking-wide">
                 Все блюда готовятся из свежих сезонных продуктов · Цены указаны в рублях с учётом НДС
               </p>
-              <button onClick={() => setActiveTab('booking')} className="imperial-btn">Забронировать стол</button>
+              <button onClick={() => navigateTo('booking')} className="imperial-btn">Забронировать стол</button>
             </div>
           </div>
         )}
@@ -285,7 +312,7 @@ export default function Index() {
             </div>
 
             <div className="text-center mt-16 scroll-reveal">
-              <button onClick={() => setActiveTab('booking')} className="imperial-btn">Забронировать стол</button>
+              <button onClick={() => navigateTo('booking')} className="imperial-btn">Забронировать стол</button>
             </div>
           </div>
         )}
@@ -356,8 +383,16 @@ export default function Index() {
                     value={bookingForm.wishes} onChange={e => setBookingForm({...bookingForm, wishes: e.target.value})} />
                 </div>
 
+                {bookingError && (
+                  <p className="text-red-500/70 text-xs font-montserrat text-center border border-red-900/30 py-3 px-4">
+                    {bookingError}
+                  </p>
+                )}
+
                 <div className="text-center pt-4">
-                  <button type="submit" className="imperial-btn-filled px-16">Отправить заявку</button>
+                  <button type="submit" disabled={bookingLoading} className="imperial-btn-filled px-16 disabled:opacity-50">
+                    {bookingLoading ? 'Отправляем...' : 'Отправить заявку'}
+                  </button>
                   <p className="text-muted-foreground text-[0.55rem] font-montserrat tracking-wide mt-6">
                     Нажимая кнопку, вы соглашаетесь с политикой обработки персональных данных
                   </p>
@@ -372,14 +407,14 @@ export default function Index() {
       <footer className="border-t border-gold/10 py-16 mt-10">
         <div className="max-w-6xl mx-auto px-8">
           <div className="text-center mb-10">
-            <h2 className="font-display text-3xl text-gold font-light italic tracking-wider">Императоръ</h2>
+            <h2 className="font-display text-3xl text-gold font-light italic tracking-wider">Golden Fork</h2>
             <p className="section-subtitle text-[0.5rem] tracking-[0.4em] mt-2 opacity-50">Ресторан высокой русской кухни</p>
           </div>
           <div className="divider-ornament mb-10 opacity-30">⸻ ✦ ⸻</div>
           <div className="flex flex-col md:flex-row justify-between items-center gap-6 text-[0.55rem] font-montserrat tracking-widest uppercase text-muted-foreground">
             <span>Москва, ул. Пречистенка, д. 17</span>
             <span>+7 (495) 123-45-67</span>
-            <span>© 2024 Ресторан «Императоръ»</span>
+            <span>© 2024 Golden Fork</span>
           </div>
         </div>
       </footer>

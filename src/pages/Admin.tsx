@@ -1,5 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Icon from '@/components/ui/icon';
+
+const API_URL = 'https://functions.poehali.dev/a1712dd6-cef1-482f-9c70-73dc534c72e6';
 
 type BookingStatus = 'pending' | 'confirmed' | 'cancelled';
 
@@ -12,16 +14,8 @@ interface Booking {
   guests: string;
   wishes: string;
   status: BookingStatus;
-  createdAt: string;
+  created_at: string;
 }
-
-const MOCK_BOOKINGS: Booking[] = [
-  { id: 1, name: 'Александров Михаил Петрович', phone: '+7 (916) 234-56-78', date: '2024-12-20', time: '19:00', guests: '3–4', wishes: 'Годовщина свадьбы. Прошу приготовить торт.', status: 'pending', createdAt: '2024-12-15 14:32' },
-  { id: 2, name: 'Романова Елена Игоревна', phone: '+7 (903) 345-67-89', date: '2024-12-21', time: '20:30', guests: '1–2', wishes: 'Аллергия на морепродукты', status: 'confirmed', createdAt: '2024-12-15 11:10' },
-  { id: 3, name: 'Воронов Дмитрий Сергеевич', phone: '+7 (985) 456-78-90', date: '2024-12-22', time: '13:00', guests: '7–10', wishes: 'Деловой ужин. Отдельный кабинет.', status: 'pending', createdAt: '2024-12-14 18:45' },
-  { id: 4, name: 'Белова Анна Николаевна', phone: '+7 (926) 567-89-01', date: '2024-12-19', time: '18:00', guests: '1–2', wishes: '', status: 'cancelled', createdAt: '2024-12-13 09:22' },
-  { id: 5, name: 'Князев Игорь Александрович', phone: '+7 (967) 678-90-12', date: '2024-12-23', time: '21:00', guests: '5–6', wishes: 'День рождения. Просьба украсить стол.', status: 'pending', createdAt: '2024-12-15 16:05' },
-];
 
 const STATUS_LABELS: Record<BookingStatus, string> = {
   pending: 'Ожидает',
@@ -39,9 +33,25 @@ export default function Admin() {
   const [authenticated, setAuthenticated] = useState(false);
   const [password, setPassword] = useState('');
   const [passwordError, setPasswordError] = useState(false);
-  const [bookings, setBookings] = useState<Booking[]>(MOCK_BOOKINGS);
+  const [bookings, setBookings] = useState<Booking[]>([]);
+  const [loading, setLoading] = useState(false);
   const [filter, setFilter] = useState<'all' | BookingStatus>('all');
   const [selected, setSelected] = useState<Booking | null>(null);
+
+  const loadBookings = async () => {
+    setLoading(true);
+    try {
+      const res = await fetch(API_URL);
+      const data = await res.json();
+      setBookings(data);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (authenticated) loadBookings();
+  }, [authenticated]);
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -53,9 +63,14 @@ export default function Admin() {
     }
   };
 
-  const updateStatus = (id: number, status: BookingStatus) => {
+  const updateStatus = async (id: number, status: BookingStatus) => {
     setBookings(prev => prev.map(b => b.id === id ? { ...b, status } : b));
     if (selected?.id === id) setSelected(prev => prev ? { ...prev, status } : null);
+    await fetch(API_URL, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id, status }),
+    });
   };
 
   const filtered = filter === 'all' ? bookings : bookings.filter(b => b.status === filter);
@@ -73,7 +88,7 @@ export default function Admin() {
         <div className="w-full max-w-sm px-8">
           <div className="text-center mb-12">
             <p className="section-subtitle text-[0.5rem] tracking-[0.4em] mb-3 opacity-60">Панель управления</p>
-            <h1 className="font-display text-4xl text-gold-light font-light italic">Императоръ</h1>
+            <h1 className="font-display text-4xl text-gold-light font-light italic">Golden Fork</h1>
             <div className="w-16 h-px bg-gold/30 mx-auto mt-6" />
           </div>
 
@@ -115,7 +130,7 @@ export default function Admin() {
           <div className="flex items-center gap-6">
             <div>
               <p className="section-subtitle text-[0.45rem] tracking-[0.4em] opacity-50">Панель управления</p>
-              <h1 className="font-display text-xl text-gold-light font-light tracking-wider">Императоръ</h1>
+              <h1 className="font-display text-xl text-gold-light font-light tracking-wider">Golden Fork</h1>
             </div>
             <div className="w-px h-8 bg-gold/20" />
             <p className="font-montserrat text-[0.6rem] text-muted-foreground tracking-widest uppercase">Бронирования</p>
@@ -169,7 +184,11 @@ export default function Admin() {
 
             {/* Booking rows */}
             <div className="space-y-0">
-              {filtered.length === 0 ? (
+              {loading ? (
+                <div className="border border-gold/10 p-12 text-center">
+                  <p className="text-muted-foreground font-montserrat text-xs">Загрузка...</p>
+                </div>
+              ) : filtered.length === 0 ? (
                 <div className="border border-gold/10 p-12 text-center">
                   <p className="text-muted-foreground font-montserrat text-xs">Заявок не найдено</p>
                 </div>
@@ -206,7 +225,7 @@ export default function Admin() {
                         </div>
                       </div>
                       <p className="text-muted-foreground font-montserrat text-[0.5rem] tracking-wide flex-shrink-0 ml-4">
-                        {booking.createdAt}
+                        {booking.created_at}
                       </p>
                     </div>
                     {booking.wishes && (
@@ -293,7 +312,7 @@ export default function Admin() {
 
                 <div className="mt-8 pt-6 border-t border-gold/10">
                   <p className="text-muted-foreground font-montserrat text-[0.5rem] tracking-wide">
-                    Заявка получена: {selected.createdAt}
+                    Заявка получена: {selected.created_at}
                   </p>
                 </div>
               </div>
